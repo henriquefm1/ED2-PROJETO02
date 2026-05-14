@@ -70,3 +70,38 @@ public class Documento {
         return vocabulario;
     }
 }
+import java.io.*;
+import java.nio.file.*;
+import java.util.regex.*;
+
+public class Documento {
+
+    private String nome;
+    private HashTable vocabulario;
+
+    // capacidade padrão da tabela; ajuste conforme o tamanho esperado dos docs
+    private static final int CAPACIDADE_TABELA = 1024;
+    // tipoHash: 1 = divisão, 2 = multiplicação
+    private static final int TIPO_HASH = 1;
+
+    public Documento(String caminhoArquivo) throws IOException {
+        this.nome       = Path.of(caminhoArquivo).getFileName().toString();
+        this.vocabulario = new HashTable(CAPACIDADE_TABELA, TIPO_HASH);
+        processar(caminhoArquivo);
+    }
+
+    private void processar(String caminho) throws IOException {
+        String conteudo = Files.readString(Path.of(caminho));
+        // mantém apenas letras e espaços, converte para minúsculas
+        String limpo = conteudo.toLowerCase().replaceAll("[^a-záàâãéèêíïóôõöúüçñ ]", " ");
+        String[] tokens = limpo.split("\\s+");
+        for (String token : tokens) {
+            if (!token.isEmpty()) {
+                vocabulario.put(token);
+            }
+        }
+    }
+
+    public String getNome()           { return nome;        }
+    public HashTable getVocabulario() { return vocabulario; }
+}

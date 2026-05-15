@@ -78,14 +78,14 @@ public class HashTable{
 
     //retorna todas as palavras unicas (util para calculo de similaridade)
     public String[] obterTodasChaves(){
-        String[] chaves = new String[tamanho];
-        int index = 0;
-        for(int i = 0; i < capacidade; i++){
-            Entrada atual = tabela[i];
-            while(atual != null){
-                chaves[index++] = atual.chave;
-            }
+    java.util.List<String> lista = new java.util.ArrayList<>();
+    for(int i = 0; i < capacidade; i++){
+        Entrada atual = tabela[i];
+        while(atual != null){
+            lista.add(atual.chave);
+            atual = atual.proximo;
         }
-        return chaves;
+    }
+    return lista.toArray(new String[0]);
     }
 }

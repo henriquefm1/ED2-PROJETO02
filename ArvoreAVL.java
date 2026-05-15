@@ -1,61 +1,55 @@
-import Java.util.ArrayList;
-import java.util.Last
+import java.util.ArrayList;
+import java.util.List;                                          
 
-public class ArvoreAVL{
-    
-    private class No{
+public class ArvoreAVL {
+
+    private class No {
         double chave;
-        List <Resultado> pares;
+        List<Resultado> pares;
         No esquerdo, direito;
         int altura;
 
-        No(double chave, Resultado, resultado){
-            this.chave = chave;
-            this.pares = new ArrayList<>();
+        No(double chave, Resultado resultado) {                 
+            this.chave  = chave;
+            this.pares  = new ArrayList<>();
             this.pares.add(resultado);
             this.altura = 1;
         }
     }
 
     private No raiz;
-    private int TotalRotacoesSimples;
-    private int TotalRotacoesDuplas;
+    private int totalRotacoesSimples;                          
+    private int totalRotacoesDuplas;
 
-    public int Inserir(Resultado, resultado){
+    public int inserir(Resultado resultado) {                  
         int[] rotacoesNaInsercao = {0, 0};
-        raiz = inserirRec(raiz, resultado, getSimilaridade(), resultado, rotacoesNaInsercao);
+        raiz = inserirRec(raiz, resultado.getSimilaridade(),   
+                          resultado, rotacoesNaInsercao);
 
-        TotalRotacoesSimples += rotacoesNaInsercao[0];
-        TotalRotacoesDuplas += rotacoesNaInsercao[1];
+        totalRotacoesSimples += rotacoesNaInsercao[0];
+        totalRotacoesDuplas  += rotacoesNaInsercao[1];
         return rotacoesNaInsercao[0] + rotacoesNaInsercao[1];
     }
 
-    public List<Resultado> emOrdemDescrescente(){
-        List<Resultado> lista = new ArrayList<> ();
-        emOrdemDescrescenteRec(raiz, lista);
+    public List<Resultado> emOrdemDecrescente() {              
+        List<Resultado> lista = new ArrayList<>();
+        emOrdemDecrescenteRec(raiz, lista);
         return lista;
     }
 
-    public int getTotalRotacoesSimples(){
-        return TotalRotacoesSimples;
-    }
-    public int getTotalRotacoesDuplas(){
-        return TotalRotacoesDuplas;
-    }
-    public int getTotalRotacoes(){
-        return TotalRotacoesDuplas + TotalRotacoesSimples;
-    }
+    public int getTotalRotacoesSimples() { return totalRotacoesSimples; }
+    public int getTotalRotacoesDuplas()  { return totalRotacoesDuplas;  }
+    public int getTotalRotacoes()        { return totalRotacoesSimples + totalRotacoesDuplas; }
 
-    private No inserirRec (No no, chave, Resultado resultado, int[] rot){
-        if(no == null){
-            return new No(chave, resultado);
-        }
+    private No inserirRec(No no, double chave,                 
+                          Resultado resultado, int[] rot) {
+        if (no == null) return new No(chave, resultado);
 
-        if(chave < no.chave){
+        if (chave < no.chave) {
             no.esquerdo = inserirRec(no.esquerdo, chave, resultado, rot);
-        }else if(chave > no.chave){
-            no.direito = inserirRec (no.direito, chave, resultado, rot);
-        }else{
+        } else if (chave > no.chave) {
+            no.direito  = inserirRec(no.direito,  chave, resultado, rot);
+        } else {
             no.pares.add(resultado);
             return no;
         }
@@ -64,61 +58,64 @@ public class ArvoreAVL{
 
         int fator = fatorBalanceamento(no);
 
-        if(fator > 1 && chave < no.esquerdo.chave){
-            rot[0] ++;
-            return rotacionaDireita;
-        }
-        if(fator < -1 && chave > no.direito.chave){
+        // LL — simples direita
+        if (fator > 1 && chave < no.esquerdo.chave) {
             rot[0]++;
-            return rotacionaEsquerda(no);
+            return rotacionarDireita(no);                      
         }
-        if(fator > 1 && chave > no.esquerdo.chave){
-            rot[1]++;
-            return rotacionaDireita(no);
+        // RR — simples esquerda
+        if (fator < -1 && chave > no.direito.chave) {
+            rot[0]++;
+            return rotacionarEsquerda(no);
         }
-        if(fator < -1 && chave < no.direito.chave){
+        // LR — dupla esquerda-direita
+        if (fator > 1 && chave > no.esquerdo.chave) {
             rot[1]++;
-            return rotacionaEsquerda(no);
+            no.esquerdo = rotacionarEsquerda(no.esquerdo);   
+            return rotacionarDireita(no);
+        }
+        // RL — dupla direita-esquerda
+        if (fator < -1 && chave < no.direito.chave) {
+            rot[1]++;
+            no.direito = rotacionarDireita(no.direito);        
+            return rotacionarEsquerda(no);
         }
 
-        return no
+        return no;                                            
     }
 
-    private void emOrdemDescrescenteRec (No no, List<Resultado> lista){
+    private void emOrdemDecrescenteRec(No no, List<Resultado> lista) {
         if (no == null) return;
-
-        emOrdemDescrescenteRec(no.direito, lista);
+        emOrdemDecrescenteRec(no.direito, lista);
         lista.addAll(no.pares);
-        emOrdemDescrescenteRec(no.esquerdo, lista);
+        emOrdemDecrescenteRec(no.esquerdo, lista);
     }
 
-    private int altura (No no){
+    private int altura(No no) {
+        return (no == null) ? 0 : no.altura;                 
+    }
+
+    private int fatorBalanceamento(No no) {
         return (no == null) ? 0 : altura(no.esquerdo) - altura(no.direito);
     }
 
-    private No rotacionaDireita(No y){
-        No x = y.esquerdo;
+    private No rotacionarDireita(No y) {
+        No x  = y.esquerdo;
         No T2 = x.direito;
-
-        x.direito = y;
+        x.direito  = y;
         y.esquerdo = T2;
-
-        y.altura = 1 + Math.max(altura(y.esquerdo) altura(y.direito));
-        x.altura = 1 + Math.max(altura(x.esquerdo) altura(x.direito));
-
+        y.altura = 1 + Math.max(altura(y.esquerdo), altura(y.direito));
+        x.altura = 1 + Math.max(altura(x.esquerdo), altura(x.direito));
         return x;
     }
 
-    private No rotacionaEsquerda(No x){
-        No y = x.direito;
+    private No rotacionarEsquerda(No x) {
+        No y  = x.direito;
         No T2 = y.esquerdo;
-
         y.esquerdo = x;
-        x.direito = T2;
-
-        x.altura = 1 + Math.max(altura(x.esquerdo) altura(x.direito));
-        y.altura = 1 + Math.max(altura(y.esquerdo) altura(y.direito));
-
+        x.direito  = T2;
+        x.altura = 1 + Math.max(altura(x.esquerdo), altura(x.direito)); 
+        y.altura = 1 + Math.max(altura(y.esquerdo), altura(y.direito));
         return y;
     }
 }

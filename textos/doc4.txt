@@ -1,0 +1,4 @@
+A segurança da informação é fundamental para proteger dados confidenciais contra acessos não autorizados. 
+Ataques cibernéticos, como o phishing e o ransomware, ameaçam empresas no mundo todo. 
+Para garantir a proteção, especialistas utilizam técnicas avançadas de criptografia e firewalls. 
+A conscientização dos usuários também é uma camada essencial na defesa de sistemas computacionais.

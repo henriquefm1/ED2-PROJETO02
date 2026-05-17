@@ -1,0 +1,3 @@
+Técnicas de criptografia e firewalls são essenciais para a segurança da informação e proteção de sistemas computacionais. 
+A defesa contra ataques cibernéticos, incluindo ransomware e phishing, exige que os dados confidenciais fiquem seguros contra acessos não autorizados. 
+Além disso, educar e garantir a conscientização dos usuários ajuda a proteger as empresas no mundo todo.
